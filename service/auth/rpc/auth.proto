@@ -1,0 +1,50 @@
+syntax="proto3";
+
+package auth;
+
+option go_package="/auth";
+
+service AuthService {
+  rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
+  rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+  rpc RefreshTokenByRPC(RefreshTokenReq) returns (RefreshTokenResp) {}
+  rpc ExpireTokenByRPC(ExpireTokenReq) returns (ExpireTokenResp) {}
+}
+
+message DeliverTokenReq {
+  uint32  user_id= 1;
+}
+
+message DeliveryResp {
+  string token = 1;
+  string refresh_token = 2;
+}
+
+message VerifyTokenReq {
+  string token = 1;
+  string token_type = 2;
+}
+
+message VerifyResp {
+  bool res = 1;
+  uint32 user_id = 2;
+  int64 exp = 3;
+}
+
+message RefreshTokenReq{
+  string access_token=1;
+  string refresh_token=2;
+}
+
+message RefreshTokenResp{
+  string access_token=1;
+}
+
+message ExpireTokenReq{
+  string access_token=1;
+  string refresh_token=2;
+}
+
+message ExpireTokenResp{
+  bool res=1;
+}

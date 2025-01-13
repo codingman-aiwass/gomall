@@ -1,0 +1,55 @@
+type (
+	Address {
+		StreetAddress string `json:"street_address"`
+		City          string `json:"city"`
+		State         string `json:"state"`
+		Country       string `json:"country"`
+		ZipCode       int32  `json:"zip_code"`
+	}
+	CartItem {
+		ProductId uint32 `json:"product_id"`
+		Quantity  int32  `json:"quantity"`
+	}
+	OrderItem {
+		Item CartItem `json:"item"`
+		Cost float64  `json:"cost"`
+	}
+	OrderResult {
+		OrderId string `json:"order_id"`
+	}
+	Order {
+		OrderItems   []OrderItem `json:"order_items"`
+		OrderId      string      `json:"order_id"`
+		UserId       uint32      `json:"user_id"`
+		UserCurrency string      `json:"user_currency"`
+		UserAddress  Address     `json:"user_address"`
+		Email        string      `json:"email"`
+		CreateAt     string      `json:"create_at"`
+	}
+	PlaceOrderRequest {
+		//                       UserId       uint32      `json:"user_id"`
+		UserCurrency string      `json:"user_currency"`
+		UserAddress  Address     `json:"user_address"`
+		Email        string      `json:"email"`
+		OrderItems   []OrderItem `json:"order_items"`
+	}
+	PlaceOrderResponse {
+		Order OrderResult `json:"order"`
+	}
+	ListOrderRequest  {}
+	ListOrderResponse {
+		Orders []Order `json:"orders"`
+	}
+)
+
+@server (
+	middleware: AuthMiddleware
+)
+service Order {
+	@handler PlaceOrder
+	post /api/order/place-order (PlaceOrderRequest) returns (PlaceOrderResponse)
+
+	@handler ListOrders
+	get /api/order/list-orders (ListOrderRequest) returns (ListOrderResponse)
+}
+

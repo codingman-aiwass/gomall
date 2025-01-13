@@ -1,0 +1,42 @@
+type (
+	CartItem {
+		ProductId uint32 `json:"product_id"`
+		Quantity  int32  `json:"quantity"`
+	}
+	// 添加商品到购物车
+	AddItemRequest {
+		CartItem CartItem `json:"cart_item"`
+	}
+	AddItemResponse {
+		Success bool `json:"success"`
+	}
+	// 添加商品到购物车
+	// 清空购物车
+	EmptyCartRequest  {}
+	EmptyCartResponse {
+		Success bool `json:"success"`
+	}
+	// 清空购物车
+	// 获取购物车
+	GetCartRequest  {}
+	GetCartResponse {
+		UserId    uint32     `json:"user_id"`
+		CartItems []CartItem `json:"cart_items"`
+	}
+// 获取购物车
+)
+
+@server (
+	middleware: AuthMiddleware
+)
+service Cart {
+	@handler AddItem
+	post /api/cart/add-item (AddItemRequest) returns (AddItemResponse)
+
+	@handler EmptyCart
+	post /api/cart/empty-cart (EmptyCartRequest) returns (EmptyCartResponse)
+
+	@handler GetCart
+	get /api/cart/get-cart (GetCartRequest) returns (GetCartResponse)
+}
+

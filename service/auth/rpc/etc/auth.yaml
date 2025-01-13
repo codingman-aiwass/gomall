@@ -1,0 +1,18 @@
+Name: auth.rpc
+ListenOn: 0.0.0.0:9006
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: auth.rpc
+
+RedisConfig:
+  Host: "127.0.0.1:6379"
+  Password: ""
+  DB: 0
+  PoolSize: 20
+
+AuthConfig:
+  AccessSecret: uOvKLmVfztaXGpNYd4Z0I1SiT7MweJhl
+  AccessExpire: 86400
+  RefreshSecret: NYd4Z0I1SiT7MweJhluOvKLmVfztaXGp
+  RefreshExpire: 8640000

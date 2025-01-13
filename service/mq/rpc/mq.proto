@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package mq;
+
+option go_package = "./mq";
+
+// 消息队列服务
+service Mq {
+  // 发送延时消息
+  rpc SendDelayMessage(SendDelayMessageReq) returns (SendDelayMessageResp);
+}
+
+message SendDelayMessageReq {
+  string topic = 1;      // 消息主题
+  bytes payload = 2;     // 消息内容
+  int64 delaySeconds = 3; // 延时秒数
+}
+
+message SendDelayMessageResp {
+  string messageId = 1;  // 消息ID
+}

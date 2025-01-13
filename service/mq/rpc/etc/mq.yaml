@@ -1,0 +1,12 @@
+Name: mq.rpc
+ListenOn: 0.0.0.0:9005
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: mq.rpc
+
+
+RocketMQ:
+  NameServers:
+    - 127.0.0.1:9876
+
