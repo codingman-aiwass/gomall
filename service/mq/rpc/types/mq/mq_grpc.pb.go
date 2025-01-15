@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.0--rc2
-// source: mq.proto
+// source: mq/rpc/mq.proto
 
 package mq
 
@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Mq_SendDelayMessage_FullMethodName = "/mq.Mq/SendDelayMessage"
+	Mq_SendMessage_FullMethodName      = "/mq.Mq/SendMessage"
 )
 
 // MqClient is the client API for Mq service.
@@ -30,6 +31,8 @@ const (
 type MqClient interface {
 	// 发送延时消息
 	SendDelayMessage(ctx context.Context, in *SendDelayMessageReq, opts ...grpc.CallOption) (*SendDelayMessageResp, error)
+	// 发送普通消息
+	SendMessage(ctx context.Context, in *SendMessageReq, opts ...grpc.CallOption) (*SendMessageResp, error)
 }
 
 type mqClient struct {
@@ -50,6 +53,16 @@ func (c *mqClient) SendDelayMessage(ctx context.Context, in *SendDelayMessageReq
 	return out, nil
 }
 
+func (c *mqClient) SendMessage(ctx context.Context, in *SendMessageReq, opts ...grpc.CallOption) (*SendMessageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendMessageResp)
+	err := c.cc.Invoke(ctx, Mq_SendMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MqServer is the server API for Mq service.
 // All implementations must embed UnimplementedMqServer
 // for forward compatibility.
@@ -58,6 +71,8 @@ func (c *mqClient) SendDelayMessage(ctx context.Context, in *SendDelayMessageReq
 type MqServer interface {
 	// 发送延时消息
 	SendDelayMessage(context.Context, *SendDelayMessageReq) (*SendDelayMessageResp, error)
+	// 发送普通消息
+	SendMessage(context.Context, *SendMessageReq) (*SendMessageResp, error)
 	mustEmbedUnimplementedMqServer()
 }
 
@@ -70,6 +85,9 @@ type UnimplementedMqServer struct{}
 
 func (UnimplementedMqServer) SendDelayMessage(context.Context, *SendDelayMessageReq) (*SendDelayMessageResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendDelayMessage not implemented")
+}
+func (UnimplementedMqServer) SendMessage(context.Context, *SendMessageReq) (*SendMessageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
 func (UnimplementedMqServer) mustEmbedUnimplementedMqServer() {}
 func (UnimplementedMqServer) testEmbeddedByValue()            {}
@@ -110,6 +128,24 @@ func _Mq_SendDelayMessage_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Mq_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MqServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mq_SendMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MqServer).SendMessage(ctx, req.(*SendMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Mq_ServiceDesc is the grpc.ServiceDesc for Mq service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -121,7 +157,11 @@ var Mq_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "SendDelayMessage",
 			Handler:    _Mq_SendDelayMessage_Handler,
 		},
+		{
+			MethodName: "SendMessage",
+			Handler:    _Mq_SendMessage_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "mq.proto",
+	Metadata: "mq/rpc/mq.proto",
 }

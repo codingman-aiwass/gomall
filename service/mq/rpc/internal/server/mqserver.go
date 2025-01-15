@@ -28,3 +28,9 @@ func (s *MqServer) SendDelayMessage(ctx context.Context, in *mq.SendDelayMessage
 	l := logic.NewSendDelayMessageLogic(ctx, s.svcCtx)
 	return l.SendDelayMessage(in)
 }
+
+// 发送普通消息
+func (s *MqServer) SendMessage(ctx context.Context, in *mq.SendMessageReq) (*mq.SendMessageResp, error) {
+	l := logic.NewSendMessageLogic(ctx, s.svcCtx)
+	return l.SendMessage(in)
+}

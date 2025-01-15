@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"gomall/service/mq/rpc/types/mq"
 	"gomall/service/order/rpc/types/order"
 	"gomall/service/payment/rpc/types/payment"
 	"gomall/service/product/model"
@@ -133,18 +135,61 @@ func (l *CheckoutLogic) Checkout(in *checkout.CheckoutReq) (*checkout.CheckoutRe
 		})
 		if err != nil {
 			logx.Errorf("fail to mark order canceled, try to rollback database. %v", err.Error())
-			// TODO 通过消息队列，发送消息到消息队列，让订单服务去执行该取消订单操作
+			// 通过消息队列，发送消息到消息队列，让订单服务去执行该取消订单操作
+			payload := struct {
+				OrderId uint32 `json:"order_id"`
+				UserId  uint32 `json:"user_id"`
+			}{
+				OrderId: orderRes.Order.OrderId,
+				UserId:  in.UserId,
+			}
+			payloadBytes, marshalErr := json.Marshal(payload)
+			if marshalErr != nil {
+				return nil, status.Error(500, "序列化取消订单消息失败，无法发送取消订单操作到消息队列，支付失败")
+			}
+
+			_, sendMessageErr := l.svcCtx.MqRpc.SendMessage(l.ctx, &mq.SendMessageReq{
+				Topic:      "mark_order_canceled",
+				Payload:    payloadBytes,
+				Properties: nil,
+			})
+			if sendMessageErr != nil {
+				// TODO 消息发送失败，可能消息队列服务出故障了，记录日志，后续处理？
+				return nil, status.Error(500, "发送取消订单操作到消息队列失败, 支付失败")
+			}
 		}
 
 		return nil, status.Error(500, "fail to charge")
 	}
+
 	_, err = l.svcCtx.OrderRpc.MarkOrderPaid(l.ctx, &order.MarkOrderPaidReq{
 		OrderId: orderRes.Order.OrderId,
 		UserId:  in.UserId,
 	})
 	if err != nil {
 		logx.Errorf("fail to mark order paid, try to rollback database. %v", err.Error())
-		// TODO 通过消息队列，发送消息到消息队列，让订单服务去执行标记订单已支付
+		// 通过消息队列，发送消息到消息队列，让订单服务去执行标记订单已支付
+		payload := struct {
+			OrderId uint32 `json:"order_id"`
+			UserId  uint32 `json:"user_id"`
+		}{
+			OrderId: orderRes.Order.OrderId,
+			UserId:  in.UserId,
+		}
+		payloadBytes, marshalErr := json.Marshal(payload)
+		if marshalErr != nil {
+			return nil, status.Error(500, "序列化完成订单消息失败，无法发送完成订单操作到消息队列，支付失败")
+		}
+
+		_, sendMessageErr := l.svcCtx.MqRpc.SendMessage(l.ctx, &mq.SendMessageReq{
+			Topic:      "mark_order_paid",
+			Payload:    payloadBytes,
+			Properties: nil,
+		})
+		if sendMessageErr != nil {
+			// TODO 消息发送失败，可能消息队列服务出故障了，记录日志，后续处理？
+			logx.Errorf("发送完成订单操作到消息队列失败,%v", err)
+		}
 	}
 
 	return &checkout.CheckoutResp{OrderId: strconv.Itoa(int(orderRes.Order.OrderId)), TransactionId: strconv.FormatUint(chargeRes.TransactionId, 10)}, nil

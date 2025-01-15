@@ -4,6 +4,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"gomall/common/init_db"
 	"gomall/service/checkout/rpc/internal/config"
+	"gomall/service/mq/rpc/types/mq"
 	"gomall/service/order/rpc/orderservice"
 	"gomall/service/payment/rpc/paymentservice"
 	"gomall/service/product/rpc/productcatalogservice"
@@ -20,6 +21,7 @@ type ServiceContext struct {
 	ProductService string
 	OrderService   string
 	PaymentService string
+	MqRpc          mq.MqClient
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -35,5 +37,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductService: c.ProductService,
 		OrderService:   c.OrderService,
 		PaymentService: c.PaymentService,
+		MqRpc:          mq.NewMqClient(zrpc.MustNewClient(c.Mq).Conn()),
 	}
 }

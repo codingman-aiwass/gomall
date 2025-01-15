@@ -16,10 +16,14 @@ import (
 type (
 	SendDelayMessageReq  = mq.SendDelayMessageReq
 	SendDelayMessageResp = mq.SendDelayMessageResp
+	SendMessageReq       = mq.SendMessageReq
+	SendMessageResp      = mq.SendMessageResp
 
 	Mq interface {
 		// 发送延时消息
 		SendDelayMessage(ctx context.Context, in *SendDelayMessageReq, opts ...grpc.CallOption) (*SendDelayMessageResp, error)
+		// 发送普通消息
+		SendMessage(ctx context.Context, in *SendMessageReq, opts ...grpc.CallOption) (*SendMessageResp, error)
 	}
 
 	defaultMq struct {
@@ -37,4 +41,10 @@ func NewMq(cli zrpc.Client) Mq {
 func (m *defaultMq) SendDelayMessage(ctx context.Context, in *SendDelayMessageReq, opts ...grpc.CallOption) (*SendDelayMessageResp, error) {
 	client := mq.NewMqClient(m.cli.Conn())
 	return client.SendDelayMessage(ctx, in, opts...)
+}
+
+// 发送普通消息
+func (m *defaultMq) SendMessage(ctx context.Context, in *SendMessageReq, opts ...grpc.CallOption) (*SendMessageResp, error) {
+	client := mq.NewMqClient(m.cli.Conn())
+	return client.SendMessage(ctx, in, opts...)
 }

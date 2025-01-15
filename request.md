@@ -144,3 +144,6 @@ checkout: 9007
 
 docker exec -it rmqnamesrv bash
 sh mqadmin updateTopic -n localhost:9876 -t order_timeout -c DefaultCluster
+sh mqadmin updateTopic -n localhost:9876 -t transaction_timeout -c DefaultCluster
+sh mqadmin updateTopic -n localhost:9876 -t mark_order_paid -c DefaultCluster
+sh mqadmin updateTopic -n localhost:9876 -t mark_order_canceled -c DefaultCluster

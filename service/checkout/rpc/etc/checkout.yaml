@@ -26,6 +26,12 @@ ProductRpc:
       - 127.0.0.1:2379
     Key: product.rpc
 
+Mq:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: mq.rpc
+
 Dtm:
   Server: "http://localhost:36789"
 
