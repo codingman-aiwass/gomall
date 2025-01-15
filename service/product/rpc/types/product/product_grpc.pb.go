@@ -19,12 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ProductCatalogService_CreateProduct_FullMethodName  = "/product.ProductCatalogService/CreateProduct"
-	ProductCatalogService_UpdateProduct_FullMethodName  = "/product.ProductCatalogService/UpdateProduct"
-	ProductCatalogService_DeleteProduct_FullMethodName  = "/product.ProductCatalogService/DeleteProduct"
-	ProductCatalogService_ListProducts_FullMethodName   = "/product.ProductCatalogService/ListProducts"
-	ProductCatalogService_GetProduct_FullMethodName     = "/product.ProductCatalogService/GetProduct"
-	ProductCatalogService_SearchProducts_FullMethodName = "/product.ProductCatalogService/SearchProducts"
+	ProductCatalogService_CreateProduct_FullMethodName       = "/product.ProductCatalogService/CreateProduct"
+	ProductCatalogService_UpdateProduct_FullMethodName       = "/product.ProductCatalogService/UpdateProduct"
+	ProductCatalogService_DeleteProduct_FullMethodName       = "/product.ProductCatalogService/DeleteProduct"
+	ProductCatalogService_ListProducts_FullMethodName        = "/product.ProductCatalogService/ListProducts"
+	ProductCatalogService_GetProduct_FullMethodName          = "/product.ProductCatalogService/GetProduct"
+	ProductCatalogService_SearchProducts_FullMethodName      = "/product.ProductCatalogService/SearchProducts"
+	ProductCatalogService_DecreaseStock_FullMethodName       = "/product.ProductCatalogService/DecreaseStock"
+	ProductCatalogService_DecreaseStockRevert_FullMethodName = "/product.ProductCatalogService/DecreaseStockRevert"
 )
 
 // ProductCatalogServiceClient is the client API for ProductCatalogService service.
@@ -37,6 +39,8 @@ type ProductCatalogServiceClient interface {
 	ListProducts(ctx context.Context, in *ListProductsReq, opts ...grpc.CallOption) (*ListProductsResp, error)
 	GetProduct(ctx context.Context, in *GetProductReq, opts ...grpc.CallOption) (*GetProductResp, error)
 	SearchProducts(ctx context.Context, in *SearchProductsReq, opts ...grpc.CallOption) (*SearchProductsResp, error)
+	DecreaseStock(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error)
+	DecreaseStockRevert(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error)
 }
 
 type productCatalogServiceClient struct {
@@ -107,6 +111,26 @@ func (c *productCatalogServiceClient) SearchProducts(ctx context.Context, in *Se
 	return out, nil
 }
 
+func (c *productCatalogServiceClient) DecreaseStock(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DecreaseStockResp)
+	err := c.cc.Invoke(ctx, ProductCatalogService_DecreaseStock_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productCatalogServiceClient) DecreaseStockRevert(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DecreaseStockResp)
+	err := c.cc.Invoke(ctx, ProductCatalogService_DecreaseStockRevert_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductCatalogServiceServer is the server API for ProductCatalogService service.
 // All implementations must embed UnimplementedProductCatalogServiceServer
 // for forward compatibility.
@@ -117,6 +141,8 @@ type ProductCatalogServiceServer interface {
 	ListProducts(context.Context, *ListProductsReq) (*ListProductsResp, error)
 	GetProduct(context.Context, *GetProductReq) (*GetProductResp, error)
 	SearchProducts(context.Context, *SearchProductsReq) (*SearchProductsResp, error)
+	DecreaseStock(context.Context, *DecreaseStockReq) (*DecreaseStockResp, error)
+	DecreaseStockRevert(context.Context, *DecreaseStockReq) (*DecreaseStockResp, error)
 	mustEmbedUnimplementedProductCatalogServiceServer()
 }
 
@@ -144,6 +170,12 @@ func (UnimplementedProductCatalogServiceServer) GetProduct(context.Context, *Get
 }
 func (UnimplementedProductCatalogServiceServer) SearchProducts(context.Context, *SearchProductsReq) (*SearchProductsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchProducts not implemented")
+}
+func (UnimplementedProductCatalogServiceServer) DecreaseStock(context.Context, *DecreaseStockReq) (*DecreaseStockResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecreaseStock not implemented")
+}
+func (UnimplementedProductCatalogServiceServer) DecreaseStockRevert(context.Context, *DecreaseStockReq) (*DecreaseStockResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecreaseStockRevert not implemented")
 }
 func (UnimplementedProductCatalogServiceServer) mustEmbedUnimplementedProductCatalogServiceServer() {}
 func (UnimplementedProductCatalogServiceServer) testEmbeddedByValue()                               {}
@@ -274,6 +306,42 @@ func _ProductCatalogService_SearchProducts_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductCatalogService_DecreaseStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecreaseStockReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductCatalogServiceServer).DecreaseStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductCatalogService_DecreaseStock_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductCatalogServiceServer).DecreaseStock(ctx, req.(*DecreaseStockReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductCatalogService_DecreaseStockRevert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecreaseStockReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductCatalogServiceServer).DecreaseStockRevert(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductCatalogService_DecreaseStockRevert_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductCatalogServiceServer).DecreaseStockRevert(ctx, req.(*DecreaseStockReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductCatalogService_ServiceDesc is the grpc.ServiceDesc for ProductCatalogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +372,14 @@ var ProductCatalogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchProducts",
 			Handler:    _ProductCatalogService_SearchProducts_Handler,
+		},
+		{
+			MethodName: "DecreaseStock",
+			Handler:    _ProductCatalogService_DecreaseStock_Handler,
+		},
+		{
+			MethodName: "DecreaseStockRevert",
+			Handler:    _ProductCatalogService_DecreaseStockRevert_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

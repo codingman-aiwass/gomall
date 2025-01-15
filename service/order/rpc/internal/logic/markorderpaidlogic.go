@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"gomall/service/order/model"
+	"google.golang.org/grpc/status"
 
 	"gomall/service/order/rpc/internal/svc"
 	"gomall/service/order/rpc/types/order"
@@ -25,7 +26,10 @@ func NewMarkOrderPaidLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mar
 }
 
 func (l *MarkOrderPaidLogic) MarkOrderPaid(in *order.MarkOrderPaidReq) (*order.MarkOrderPaidResp, error) {
-	l.svcCtx.DB.Model(&model.OrderModel{}).Where("user_id = ? and order_id = ?", in.UserId, in.OrderId).Update("status", 1)
+	err := l.svcCtx.DB.Model(&model.OrderModel{}).Where("user_id = ? and id = ?", in.UserId, in.OrderId).Update("status", 1).Error
+	if err != nil {
+		return nil, status.Error(100, "更新订单状态失败")
+	}
 
 	return &order.MarkOrderPaidResp{}, nil
 }

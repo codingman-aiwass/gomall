@@ -1,0 +1,36 @@
+Name: checkout.rpc
+ListenOn: 0.0.0.0:9007
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: checkout.rpc
+
+Mysql:
+  DataSource: root:aiwass@tcp(127.0.0.1:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
+
+PaymentRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: payment.rpc
+
+OrderRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: order.rpc
+
+ProductRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: product.rpc
+
+Dtm:
+  Server: "http://localhost:36789"
+
+ProductService: "grpc://127.0.0.1:9001"
+
+OrderService: "grpc://127.0.0.1:9002"
+
+PaymentService: "grpc://127.0.0.1:9003"

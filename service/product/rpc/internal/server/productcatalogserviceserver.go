@@ -52,3 +52,13 @@ func (s *ProductCatalogServiceServer) SearchProducts(ctx context.Context, in *pr
 	l := logic.NewSearchProductsLogic(ctx, s.svcCtx)
 	return l.SearchProducts(in)
 }
+
+func (s *ProductCatalogServiceServer) DecreaseStock(ctx context.Context, in *product.DecreaseStockReq) (*product.DecreaseStockResp, error) {
+	l := logic.NewDecreaseStockLogic(ctx, s.svcCtx)
+	return l.DecreaseStock(in)
+}
+
+func (s *ProductCatalogServiceServer) DecreaseStockRevert(ctx context.Context, in *product.DecreaseStockReq) (*product.DecreaseStockResp, error) {
+	l := logic.NewDecreaseStockRevertLogic(ctx, s.svcCtx)
+	return l.DecreaseStockRevert(in)
+}

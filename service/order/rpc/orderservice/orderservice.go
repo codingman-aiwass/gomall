@@ -14,22 +14,28 @@ import (
 )
 
 type (
-	Address           = order.Address
-	CartItem          = order.CartItem
-	ListOrderReq      = order.ListOrderReq
-	ListOrderResp     = order.ListOrderResp
-	MarkOrderPaidReq  = order.MarkOrderPaidReq
-	MarkOrderPaidResp = order.MarkOrderPaidResp
-	Order             = order.Order
-	OrderItem         = order.OrderItem
-	OrderResult       = order.OrderResult
-	PlaceOrderReq     = order.PlaceOrderReq
-	PlaceOrderResp    = order.PlaceOrderResp
+	Address               = order.Address
+	CartItem              = order.CartItem
+	GetOrderInfoReq       = order.GetOrderInfoReq
+	GetOrderInfoResp      = order.GetOrderInfoResp
+	ListOrderReq          = order.ListOrderReq
+	ListOrderResp         = order.ListOrderResp
+	MarkOrderCanceledReq  = order.MarkOrderCanceledReq
+	MarkOrderCanceledResp = order.MarkOrderCanceledResp
+	MarkOrderPaidReq      = order.MarkOrderPaidReq
+	MarkOrderPaidResp     = order.MarkOrderPaidResp
+	Order                 = order.Order
+	OrderItem             = order.OrderItem
+	OrderResult           = order.OrderResult
+	PlaceOrderReq         = order.PlaceOrderReq
+	PlaceOrderResp        = order.PlaceOrderResp
 
 	OrderService interface {
+		GetOrderInfo(ctx context.Context, in *GetOrderInfoReq, opts ...grpc.CallOption) (*GetOrderInfoResp, error)
 		PlaceOrder(ctx context.Context, in *PlaceOrderReq, opts ...grpc.CallOption) (*PlaceOrderResp, error)
 		ListOrder(ctx context.Context, in *ListOrderReq, opts ...grpc.CallOption) (*ListOrderResp, error)
 		MarkOrderPaid(ctx context.Context, in *MarkOrderPaidReq, opts ...grpc.CallOption) (*MarkOrderPaidResp, error)
+		MarkOrderCanceled(ctx context.Context, in *MarkOrderCanceledReq, opts ...grpc.CallOption) (*MarkOrderCanceledResp, error)
 	}
 
 	defaultOrderService struct {
@@ -41,6 +47,11 @@ func NewOrderService(cli zrpc.Client) OrderService {
 	return &defaultOrderService{
 		cli: cli,
 	}
+}
+
+func (m *defaultOrderService) GetOrderInfo(ctx context.Context, in *GetOrderInfoReq, opts ...grpc.CallOption) (*GetOrderInfoResp, error) {
+	client := order.NewOrderServiceClient(m.cli.Conn())
+	return client.GetOrderInfo(ctx, in, opts...)
 }
 
 func (m *defaultOrderService) PlaceOrder(ctx context.Context, in *PlaceOrderReq, opts ...grpc.CallOption) (*PlaceOrderResp, error) {
@@ -56,4 +67,9 @@ func (m *defaultOrderService) ListOrder(ctx context.Context, in *ListOrderReq, o
 func (m *defaultOrderService) MarkOrderPaid(ctx context.Context, in *MarkOrderPaidReq, opts ...grpc.CallOption) (*MarkOrderPaidResp, error) {
 	client := order.NewOrderServiceClient(m.cli.Conn())
 	return client.MarkOrderPaid(ctx, in, opts...)
+}
+
+func (m *defaultOrderService) MarkOrderCanceled(ctx context.Context, in *MarkOrderCanceledReq, opts ...grpc.CallOption) (*MarkOrderCanceledResp, error) {
+	client := order.NewOrderServiceClient(m.cli.Conn())
+	return client.MarkOrderCanceled(ctx, in, opts...)
 }

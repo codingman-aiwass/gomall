@@ -17,4 +17,5 @@ type UserModel struct {
 	Status   int8   `gorm:"size:4;not null;default:0;column:status" json:"status"`
 	Email    string `gorm:"size:64;column:email" json:"email"`
 	Verified bool   `gorm:"default:false;column:verified"`
+	Currency string `gorm:"size:16;column:currency" json:"currency"`
 }

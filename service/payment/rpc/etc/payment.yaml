@@ -1,0 +1,27 @@
+Name: payment.rpc
+ListenOn: 0.0.0.0:9003
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: payment.rpc
+
+
+Salt: HWVOFkGgPTryzICwd7qnJaZR9KQ2i8xe
+
+Mysql:
+  DataSource: root:aiwass@tcp(127.0.0.1:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
+
+
+OrderRpc:
+  App: orderapi
+  Token: 6jKNZbEpYGeUMAifz10gOnmoty3TV  # Token 值
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: order.rpc
+
+Mq:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: mq.rpc

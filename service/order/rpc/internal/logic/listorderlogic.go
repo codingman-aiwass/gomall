@@ -3,8 +3,6 @@ package logic
 import (
 	"context"
 	"gomall/service/order/model"
-	"strconv"
-
 	"gomall/service/order/rpc/internal/svc"
 	"gomall/service/order/rpc/types/order"
 
@@ -61,7 +59,7 @@ func (l *ListOrderLogic) ListOrder(in *order.ListOrderReq) (*order.ListOrderResp
 		for _, orderItem := range orderItems {
 			if orderItem.OrderId == per_order.Id {
 				res_orders = append(res_orders, &order.Order{
-					OrderId:      strconv.Itoa(int(per_order.Id)),
+					OrderId:      per_order.Id,
 					UserId:       per_order.UserId,
 					UserCurrency: per_order.UserCurrency,
 					Address: &order.Address{
@@ -82,6 +80,7 @@ func (l *ListOrderLogic) ListOrder(in *order.ListOrderReq) (*order.ListOrderResp
 							Cost: float32(orderItem.Cost),
 						},
 					},
+					Status: int32(per_order.Status),
 				})
 			}
 		}

@@ -1,0 +1,21 @@
+Name: CheckoutService
+Host: 0.0.0.0
+Port: 8007
+
+
+Auth:
+  AccessSecret: uOvKLmVfztaXGpNYd4Z0I1SiT7MweJhl
+  AccessExpire: 86400
+
+AuthRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: auth.rpc
+
+CheckoutRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: checkout.rpc
+

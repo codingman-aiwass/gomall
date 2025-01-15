@@ -16,6 +16,8 @@ import (
 type (
 	CreateProductReq   = product.CreateProductReq
 	CreateProductResp  = product.CreateProductResp
+	DecreaseStockReq   = product.DecreaseStockReq
+	DecreaseStockResp  = product.DecreaseStockResp
 	DeleteProductReq   = product.DeleteProductReq
 	DeleteProductResp  = product.DeleteProductResp
 	GetProductReq      = product.GetProductReq
@@ -25,6 +27,7 @@ type (
 	Product            = product.Product
 	SearchProductsReq  = product.SearchProductsReq
 	SearchProductsResp = product.SearchProductsResp
+	StockItem          = product.StockItem
 	UpdateProductReq   = product.UpdateProductReq
 	UpdateProductResp  = product.UpdateProductResp
 
@@ -35,6 +38,8 @@ type (
 		ListProducts(ctx context.Context, in *ListProductsReq, opts ...grpc.CallOption) (*ListProductsResp, error)
 		GetProduct(ctx context.Context, in *GetProductReq, opts ...grpc.CallOption) (*GetProductResp, error)
 		SearchProducts(ctx context.Context, in *SearchProductsReq, opts ...grpc.CallOption) (*SearchProductsResp, error)
+		DecreaseStock(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error)
+		DecreaseStockRevert(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error)
 	}
 
 	defaultProductCatalogService struct {
@@ -76,4 +81,14 @@ func (m *defaultProductCatalogService) GetProduct(ctx context.Context, in *GetPr
 func (m *defaultProductCatalogService) SearchProducts(ctx context.Context, in *SearchProductsReq, opts ...grpc.CallOption) (*SearchProductsResp, error) {
 	client := product.NewProductCatalogServiceClient(m.cli.Conn())
 	return client.SearchProducts(ctx, in, opts...)
+}
+
+func (m *defaultProductCatalogService) DecreaseStock(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error) {
+	client := product.NewProductCatalogServiceClient(m.cli.Conn())
+	return client.DecreaseStock(ctx, in, opts...)
+}
+
+func (m *defaultProductCatalogService) DecreaseStockRevert(ctx context.Context, in *DecreaseStockReq, opts ...grpc.CallOption) (*DecreaseStockResp, error) {
+	client := product.NewProductCatalogServiceClient(m.cli.Conn())
+	return client.DecreaseStockRevert(ctx, in, opts...)
 }

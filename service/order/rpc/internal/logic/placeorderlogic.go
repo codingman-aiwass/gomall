@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"gomall/service/order/model"
-	"strconv"
-
 	"gorm.io/gorm"
 
 	"gomall/service/mq/rpc/types/mq"
@@ -84,10 +82,10 @@ func (l *PlaceOrderLogic) PlaceOrder(in *order.PlaceOrderReq) (*order.PlaceOrder
 		}
 
 		_, err = l.svcCtx.MqRpc.SendDelayMessage(l.ctx, &mq.SendDelayMessageReq{
-			Topic:   "order_timeout",
-			Payload: payloadBytes,
-			//DelaySeconds: 15 * 60, // 15分钟
-			DelaySeconds: 15 * 1, // 15s
+			Topic:        "order_timeout",
+			Payload:      payloadBytes,
+			DelaySeconds: 15 * 60, // 15分钟
+			//DelaySeconds: 15 * 1, // 15s
 		})
 		if err != nil {
 			return err
@@ -99,5 +97,5 @@ func (l *PlaceOrderLogic) PlaceOrder(in *order.PlaceOrderReq) (*order.PlaceOrder
 		return nil, err
 	}
 
-	return &order.PlaceOrderResp{Order: &order.OrderResult{OrderId: strconv.Itoa(int(orderModel.Id))}}, nil
+	return &order.PlaceOrderResp{Order: &order.OrderResult{OrderId: orderModel.Id}}, nil
 }

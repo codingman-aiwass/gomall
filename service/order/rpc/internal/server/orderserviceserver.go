@@ -23,6 +23,11 @@ func NewOrderServiceServer(svcCtx *svc.ServiceContext) *OrderServiceServer {
 	}
 }
 
+func (s *OrderServiceServer) GetOrderInfo(ctx context.Context, in *order.GetOrderInfoReq) (*order.GetOrderInfoResp, error) {
+	l := logic.NewGetOrderInfoLogic(ctx, s.svcCtx)
+	return l.GetOrderInfo(in)
+}
+
 func (s *OrderServiceServer) PlaceOrder(ctx context.Context, in *order.PlaceOrderReq) (*order.PlaceOrderResp, error) {
 	l := logic.NewPlaceOrderLogic(ctx, s.svcCtx)
 	return l.PlaceOrder(in)
@@ -36,4 +41,9 @@ func (s *OrderServiceServer) ListOrder(ctx context.Context, in *order.ListOrderR
 func (s *OrderServiceServer) MarkOrderPaid(ctx context.Context, in *order.MarkOrderPaidReq) (*order.MarkOrderPaidResp, error) {
 	l := logic.NewMarkOrderPaidLogic(ctx, s.svcCtx)
 	return l.MarkOrderPaid(in)
+}
+
+func (s *OrderServiceServer) MarkOrderCanceled(ctx context.Context, in *order.MarkOrderCanceledReq) (*order.MarkOrderCanceledResp, error) {
+	l := logic.NewMarkOrderCanceledLogic(ctx, s.svcCtx)
+	return l.MarkOrderCanceled(in)
 }

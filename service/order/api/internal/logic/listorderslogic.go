@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"gomall/service/order/rpc/types/order"
+	"strconv"
 
 	"gomall/service/order/api/internal/svc"
 	"gomall/service/order/api/internal/types"
@@ -48,7 +49,7 @@ func (l *ListOrdersLogic) ListOrders(req *types.ListOrderRequest) (resp *types.L
 
 	for _, item := range res.Orders {
 		orders = append(orders, types.Order{
-			OrderId:      item.OrderId,
+			OrderId:      strconv.Itoa(int(item.OrderId)),
 			UserId:       item.UserId,
 			UserCurrency: item.UserCurrency,
 			UserAddress: types.Address{

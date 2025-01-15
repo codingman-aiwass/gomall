@@ -1,5 +1,4 @@
 default.etcd/
 .history/
-*.yml
 *.tmp
 *.idea/

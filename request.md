@@ -132,3 +132,15 @@ Git操作教程 Git
 goctl rpc protoc .\order\rpc\order.proto --go_out=order/rpc/types --go-grpc_out=order/rpc/types --zrpc_out=order/rpc --proto_path=.\
 
 goctl api go --api .\cart\api\cart.api --dir .\cart\api\
+
+auth: 9006
+cart: 9004
+mq: 9005
+payment: 9003
+order: 9002
+product: 9001
+user: 9000
+checkout: 9007
+
+docker exec -it rmqnamesrv bash
+sh mqadmin updateTopic -n localhost:9876 -t order_timeout -c DefaultCluster
