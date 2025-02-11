@@ -19,4 +19,8 @@ type Config struct {
 		DB       int
 		PoolSize int
 	}
+
+	Mysql struct {
+		DataSource string
+	}
 }

@@ -16,3 +16,6 @@ AuthConfig:
   AccessExpire: 86400
   RefreshSecret: NYd4Z0I1SiT7MweJhluOvKLmVfztaXGp
   RefreshExpire: 8640000
+
+Mysql:
+  DataSource: root:aiwass@tcp(127.0.0.1:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local

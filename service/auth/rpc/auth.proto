@@ -9,6 +9,7 @@ service AuthService {
   rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
   rpc RefreshTokenByRPC(RefreshTokenReq) returns (RefreshTokenResp) {}
   rpc ExpireTokenByRPC(ExpireTokenReq) returns (ExpireTokenResp) {}
+  rpc VerifyPermissionByRPC(VerifyPermissionReq) returns (VerifyPermissionResp){}
 }
 
 message DeliverTokenReq {
@@ -47,4 +48,13 @@ message ExpireTokenReq{
 
 message ExpireTokenResp{
   bool res=1;
+}
+
+message VerifyPermissionReq{
+  uint32 user_id = 1;
+  string resource = 2;
+  string method = 3;
+}
+
+message VerifyPermissionResp{
 }
