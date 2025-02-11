@@ -10,6 +10,7 @@ service AuthService {
   rpc RefreshTokenByRPC(RefreshTokenReq) returns (RefreshTokenResp) {}
   rpc ExpireTokenByRPC(ExpireTokenReq) returns (ExpireTokenResp) {}
   rpc VerifyPermissionByRPC(VerifyPermissionReq) returns (VerifyPermissionResp){}
+  rpc VerifyPathInWhiteList(VerifyPathInWhiteListReq) returns (VerifyPathInWhiteListResp){}
 }
 
 message DeliverTokenReq {
@@ -57,4 +58,12 @@ message VerifyPermissionReq{
 }
 
 message VerifyPermissionResp{
+}
+
+message VerifyPathInWhiteListReq{
+  string path = 1;
+}
+
+message VerifyPathInWhiteListResp{
+  bool res = 1;
 }

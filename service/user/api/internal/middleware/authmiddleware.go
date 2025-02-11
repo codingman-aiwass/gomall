@@ -19,6 +19,13 @@ func NewAuthMiddleware(cli zrpc.Client) *AuthMiddleware {
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// 调用Auth微服务验证该路径是否在白名单中
+		resp0, _ := m.AuthRpc.VerifyPathInWhiteList(context.Background(), &authservice.VerifyPathInWhiteListReq{
+			Path: r.URL.Path,
+		})
+		if resp0.Res {
+			next(w, r)
+		}
 		// 从请求头中获取 Authorization
 		authHeader := r.Header.Get("Authorization")
 		logx.Infof("authHeader: %s", authHeader)
@@ -46,6 +53,18 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		}
 		logx.Infof("Token verification passed")
 		logx.Infof("userId: %d", resp.UserId)
+
+		// 调用 Auth微服务验证用户是否具有权限访问该接口
+		_, err1 := m.AuthRpc.VerifyPermissionByRPC(context.Background(), &authservice.VerifyPermissionReq{
+			UserId:   resp.UserId,
+			Resource: r.URL.Path,
+			Method:   r.Method,
+		})
+		if err1 != nil {
+			logx.Errorf("Auth permission verification failed: %s", err1)
+			return
+		}
+
 		// 将验证通过的用户 ID 写入请求上下文
 		ctx := context.WithValue(r.Context(), "userId", int64(resp.UserId))
 		r = r.WithContext(ctx)

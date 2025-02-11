@@ -4,10 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gomall/service/user/model"
-
 	"gomall/service/auth/rpc/internal/svc"
 	"gomall/service/auth/rpc/types/auth"
+	"gomall/service/user/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

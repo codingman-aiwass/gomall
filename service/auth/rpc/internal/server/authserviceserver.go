@@ -47,3 +47,8 @@ func (s *AuthServiceServer) VerifyPermissionByRPC(ctx context.Context, in *auth.
 	l := logic.NewVerifyPermissionByRPCLogic(ctx, s.svcCtx)
 	return l.VerifyPermissionByRPC(in)
 }
+
+func (s *AuthServiceServer) VerifyPathInWhiteList(ctx context.Context, in *auth.VerifyPathInWhiteListReq) (*auth.VerifyPathInWhiteListResp, error) {
+	l := logic.NewVerifyPathInWhiteListLogic(ctx, s.svcCtx)
+	return l.VerifyPathInWhiteList(in)
+}

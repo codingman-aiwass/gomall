@@ -4,8 +4,10 @@ import (
 	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/redis/go-redis/v9"
+	"github.com/zeromicro/go-zero/core/logx"
 	"gomall/common/init_db"
 	"gomall/service/auth/casbin_init"
+	"gomall/service/auth/model"
 	"gomall/service/auth/rpc/internal/config"
 	"gorm.io/gorm"
 )
@@ -15,6 +17,7 @@ type ServiceContext struct {
 	RDB            *redis.Client
 	MySQLDB        *gorm.DB
 	CasbinEnforcer *casbin.Enforcer
+	WhiteList      []string
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -28,12 +31,25 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		panic(err)
 	}
+
 	mysqlDB := init_db.InitGorm(c.Mysql.DataSource)
-	//mysqlDB.AutoMigrate(&model.CasbinRule{})
+	mysqlDB.AutoMigrate(&model.WhiteListModel{})
+	whiteListModels := make([]*model.WhiteListModel, 0)
+	var whiteList []string
+	err = mysqlDB.Find(&whiteListModels).Error
+	if err != nil {
+		logx.Errorf("load white list models err:%v", err)
+	} else {
+		for _, single_model := range whiteListModels {
+			whiteList = append(whiteList, single_model.Path)
+		}
+	}
+
 	return &ServiceContext{
 		Config:         c,
 		RDB:            rdb,
 		MySQLDB:        mysqlDB,
+		WhiteList:      whiteList,
 		CasbinEnforcer: casbin_init.InitCasbin(mysqlDB),
 	}
 }

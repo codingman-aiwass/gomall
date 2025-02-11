@@ -14,16 +14,18 @@ import (
 )
 
 type (
-	DeliverTokenReq      = auth.DeliverTokenReq
-	DeliveryResp         = auth.DeliveryResp
-	ExpireTokenReq       = auth.ExpireTokenReq
-	ExpireTokenResp      = auth.ExpireTokenResp
-	RefreshTokenReq      = auth.RefreshTokenReq
-	RefreshTokenResp     = auth.RefreshTokenResp
-	VerifyPermissionReq  = auth.VerifyPermissionReq
-	VerifyPermissionResp = auth.VerifyPermissionResp
-	VerifyResp           = auth.VerifyResp
-	VerifyTokenReq       = auth.VerifyTokenReq
+	DeliverTokenReq           = auth.DeliverTokenReq
+	DeliveryResp              = auth.DeliveryResp
+	ExpireTokenReq            = auth.ExpireTokenReq
+	ExpireTokenResp           = auth.ExpireTokenResp
+	RefreshTokenReq           = auth.RefreshTokenReq
+	RefreshTokenResp          = auth.RefreshTokenResp
+	VerifyPathInWhiteListReq  = auth.VerifyPathInWhiteListReq
+	VerifyPathInWhiteListResp = auth.VerifyPathInWhiteListResp
+	VerifyPermissionReq       = auth.VerifyPermissionReq
+	VerifyPermissionResp      = auth.VerifyPermissionResp
+	VerifyResp                = auth.VerifyResp
+	VerifyTokenReq            = auth.VerifyTokenReq
 
 	AuthService interface {
 		DeliverTokenByRPC(ctx context.Context, in *DeliverTokenReq, opts ...grpc.CallOption) (*DeliveryResp, error)
@@ -31,6 +33,7 @@ type (
 		RefreshTokenByRPC(ctx context.Context, in *RefreshTokenReq, opts ...grpc.CallOption) (*RefreshTokenResp, error)
 		ExpireTokenByRPC(ctx context.Context, in *ExpireTokenReq, opts ...grpc.CallOption) (*ExpireTokenResp, error)
 		VerifyPermissionByRPC(ctx context.Context, in *VerifyPermissionReq, opts ...grpc.CallOption) (*VerifyPermissionResp, error)
+		VerifyPathInWhiteList(ctx context.Context, in *VerifyPathInWhiteListReq, opts ...grpc.CallOption) (*VerifyPathInWhiteListResp, error)
 	}
 
 	defaultAuthService struct {
@@ -67,4 +70,9 @@ func (m *defaultAuthService) ExpireTokenByRPC(ctx context.Context, in *ExpireTok
 func (m *defaultAuthService) VerifyPermissionByRPC(ctx context.Context, in *VerifyPermissionReq, opts ...grpc.CallOption) (*VerifyPermissionResp, error) {
 	client := auth.NewAuthServiceClient(m.cli.Conn())
 	return client.VerifyPermissionByRPC(ctx, in, opts...)
+}
+
+func (m *defaultAuthService) VerifyPathInWhiteList(ctx context.Context, in *VerifyPathInWhiteListReq, opts ...grpc.CallOption) (*VerifyPathInWhiteListResp, error) {
+	client := auth.NewAuthServiceClient(m.cli.Conn())
+	return client.VerifyPathInWhiteList(ctx, in, opts...)
 }

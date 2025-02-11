@@ -24,6 +24,7 @@ const (
 	AuthService_RefreshTokenByRPC_FullMethodName     = "/auth.AuthService/RefreshTokenByRPC"
 	AuthService_ExpireTokenByRPC_FullMethodName      = "/auth.AuthService/ExpireTokenByRPC"
 	AuthService_VerifyPermissionByRPC_FullMethodName = "/auth.AuthService/VerifyPermissionByRPC"
+	AuthService_VerifyPathInWhiteList_FullMethodName = "/auth.AuthService/VerifyPathInWhiteList"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -35,6 +36,7 @@ type AuthServiceClient interface {
 	RefreshTokenByRPC(ctx context.Context, in *RefreshTokenReq, opts ...grpc.CallOption) (*RefreshTokenResp, error)
 	ExpireTokenByRPC(ctx context.Context, in *ExpireTokenReq, opts ...grpc.CallOption) (*ExpireTokenResp, error)
 	VerifyPermissionByRPC(ctx context.Context, in *VerifyPermissionReq, opts ...grpc.CallOption) (*VerifyPermissionResp, error)
+	VerifyPathInWhiteList(ctx context.Context, in *VerifyPathInWhiteListReq, opts ...grpc.CallOption) (*VerifyPathInWhiteListResp, error)
 }
 
 type authServiceClient struct {
@@ -95,6 +97,16 @@ func (c *authServiceClient) VerifyPermissionByRPC(ctx context.Context, in *Verif
 	return out, nil
 }
 
+func (c *authServiceClient) VerifyPathInWhiteList(ctx context.Context, in *VerifyPathInWhiteListReq, opts ...grpc.CallOption) (*VerifyPathInWhiteListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyPathInWhiteListResp)
+	err := c.cc.Invoke(ctx, AuthService_VerifyPathInWhiteList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type AuthServiceServer interface {
 	RefreshTokenByRPC(context.Context, *RefreshTokenReq) (*RefreshTokenResp, error)
 	ExpireTokenByRPC(context.Context, *ExpireTokenReq) (*ExpireTokenResp, error)
 	VerifyPermissionByRPC(context.Context, *VerifyPermissionReq) (*VerifyPermissionResp, error)
+	VerifyPathInWhiteList(context.Context, *VerifyPathInWhiteListReq) (*VerifyPathInWhiteListResp, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedAuthServiceServer) ExpireTokenByRPC(context.Context, *ExpireT
 }
 func (UnimplementedAuthServiceServer) VerifyPermissionByRPC(context.Context, *VerifyPermissionReq) (*VerifyPermissionResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPermissionByRPC not implemented")
+}
+func (UnimplementedAuthServiceServer) VerifyPathInWhiteList(context.Context, *VerifyPathInWhiteListReq) (*VerifyPathInWhiteListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyPathInWhiteList not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -240,6 +256,24 @@ func _AuthService_VerifyPermissionByRPC_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_VerifyPathInWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyPathInWhiteListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).VerifyPathInWhiteList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_VerifyPathInWhiteList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).VerifyPathInWhiteList(ctx, req.(*VerifyPathInWhiteListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyPermissionByRPC",
 			Handler:    _AuthService_VerifyPermissionByRPC_Handler,
+		},
+		{
+			MethodName: "VerifyPathInWhiteList",
+			Handler:    _AuthService_VerifyPathInWhiteList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
