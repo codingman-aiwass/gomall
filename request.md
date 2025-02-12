@@ -147,3 +147,34 @@ sh mqadmin updateTopic -n localhost:9876 -t order_timeout -c DefaultCluster
 sh mqadmin updateTopic -n localhost:9876 -t transaction_timeout -c DefaultCluster
 sh mqadmin updateTopic -n localhost:9876 -t mark_order_paid -c DefaultCluster
 sh mqadmin updateTopic -n localhost:9876 -t mark_order_canceled -c DefaultCluster
+
+docker run --name mysql1 -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=aiwass mysql:8.4
+docker run --name redis1 -d -p 6379:6379 redis:7.4.2
+docker compose up -d
+
+**etcd开发环境**
+docker run -d \
+-e ALLOW_NONE_AUTHENTICATION=yes \
+-p 2379:2379 \
+-p 2380:2380 \
+--name etcd1 bitnami/etcd
+
+**生产环境**
+docker run -d \
+-e ETCD_ROOT_PASSWORD=my_secure_password \
+-p 2379:2379 \
+-p 2380:2380 \
+--name etcd1 bitnami/etcd
+
+rpc auth 的配置：https://juejin.cn/post/7044185614811398174
+核心思想是后端在Redis中存入一个hash表，表中的key为api层需要传入的App，value为Token。
+api层调用rpc服务时，检查携带值和hash表中记录是否一致。
+
+TODO 将所有的微服务按照依赖顺序启动，每个微服务一个golang容器
+
+导出旧docker容器中的数据库： `docker exec -i mysql1 mysqldump -u root -p go_mall > 0212backup.sql`
+将拷贝出的数据库文件拷贝到目标容器中： `docker cp 0212backup.sql gomall_docker-mysql-1:/backup.sql `
+手动进入新docker容器 `docker exec -it gomall_docker-mysql-1 bash  `
+在新容器中创建数据库后，还原数据库 `mysql -u root -p go_mall < ./backup.sql`
+
+redis 恢复备份 `hset rpc:auth:user userapi 6jKNZbEpYGeUMAifz10gOnmoty3TV`

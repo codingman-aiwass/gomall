@@ -10,12 +10,16 @@ Auth:
 AuthRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: auth.rpc
 
 CheckoutRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: checkout.rpc
 
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9087
+  Path: /metrics

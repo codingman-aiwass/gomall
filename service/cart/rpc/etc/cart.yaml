@@ -2,11 +2,16 @@ Name: cart.rpc
 ListenOn: 0.0.0.0:9004
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - etcd:2379
   Key: cart.rpc
 
 Salt: HWVOFkGgPTryzICwd7qnJaZR9KQ2i8xe
 
 Mysql:
-  DataSource: root:aiwass@tcp(127.0.0.1:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:aiwass@tcp(mysql:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9094
+  Path: /metrics
 

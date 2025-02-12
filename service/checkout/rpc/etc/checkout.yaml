@@ -2,7 +2,7 @@ Name: checkout.rpc
 ListenOn: 0.0.0.0:9007
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - etcd:2379
   Key: checkout.rpc
 
 Mysql:
@@ -11,26 +11,31 @@ Mysql:
 PaymentRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: payment.rpc
 
 OrderRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: order.rpc
 
 ProductRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: product.rpc
 
 Mq:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: mq.rpc
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9097
+  Path: /metrics
 
 Dtm:
   Server: "http://localhost:36789"

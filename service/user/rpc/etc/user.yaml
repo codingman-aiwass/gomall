@@ -2,18 +2,23 @@ Name: user.rpc
 ListenOn: 0.0.0.0:9000
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - etcd:2379
   Key: user.rpc
 
 Salt: HWVOFkGgPTryzICwd7qnJaZR9KQ2i8xe
 
 Mysql:
-  DataSource: root:aiwass@tcp(127.0.0.1:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:aiwass@tcp(mysql:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
 
 Auth: true
 StrictControl: true
 Redis:
   Key: rpc:auth:user
-  Host: 127.0.0.1:6379
+  Host: redis:6379
   Type: node
   Pass:
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9090
+  Path: /metrics
