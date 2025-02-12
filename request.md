@@ -178,3 +178,8 @@ TODO 将所有的微服务按照依赖顺序启动，每个微服务一个golang
 在新容器中创建数据库后，还原数据库 `mysql -u root -p go_mall < ./backup.sql`
 
 redis 恢复备份 `hset rpc:auth:user userapi 6jKNZbEpYGeUMAifz10gOnmoty3TV`
+
+grafana https://juejin.cn/post/7044509187027501063#heading-12
+以 path 维度统计 api 接口的 qps查询 `sum(rate(http_server_requests_duration_ms_count{app="user-api"}[5m])) by (path)`
+以 method 维度统计 rpc 接口的qps查询 `sum(rate(rpc_server_requests_duration_ms_count{app="$rpc_app"}[5m])) by (method) `
+以 code 维度统计 rpc 接口的状态码 `sum(rate(rpc_server_requests_code_total{app="$rpc_app"}[5m])) by (code)`
