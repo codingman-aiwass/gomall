@@ -1,6 +1,8 @@
 Name: User
 Host: 0.0.0.0
 Port: 8000
+CertFile: ../api/etc/cert.pem
+KeyFile: ../api/etc/key.pem
 
 Auth:
   AccessSecret: uOvKLmVfztaXGpNYd4Z0I1SiT7MweJhl
@@ -13,12 +15,16 @@ UserRpc:
     Hosts:
       - etcd:2379
     Key: user.rpc
+    User: root
+    Pass: "123456"
 
 AuthRpc:
   Etcd:
     Hosts:
       - etcd:2379
     Key: auth.rpc
+    User: root
+    Pass: "123456"
 
 
 

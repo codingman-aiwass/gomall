@@ -4,6 +4,8 @@ Etcd:
   Hosts:
   - etcd:2379
   Key: auth.rpc
+  User: root
+  Pass: "123456"
 
 RedisConfig:
   Host: redis:6379
@@ -12,9 +14,9 @@ RedisConfig:
   PoolSize: 20
 
 AuthConfig:
-  AccessSecret: uOvKLmVfztaXGpNYd4Z0I1SiT7MweJhl
+  AccessSecret: /
   AccessExpire: 86400
-  RefreshSecret: NYd4Z0I1SiT7MweJhluOvKLmVfztaXGp
+  RefreshSecret: /
   RefreshExpire: 8640000
 
 Mysql:

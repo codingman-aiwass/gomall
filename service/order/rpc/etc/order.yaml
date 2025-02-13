@@ -4,6 +4,8 @@ Etcd:
   Hosts:
   - etcd:2379
   Key: order.rpc
+  User: root
+  Pass: "123456"
 
 Salt: HWVOFkGgPTryzICwd7qnJaZR9KQ2i8xe
 
@@ -15,6 +17,8 @@ Mq:
     Hosts:
       - etcd:2379
     Key: mq.rpc
+    User: root
+    Pass: "123456"
 
 Prometheus:
   Host: 0.0.0.0

@@ -4,33 +4,43 @@ Etcd:
   Hosts:
   - etcd:2379
   Key: checkout.rpc
+  User: root
+  Pass: "123456"
 
 Mysql:
-  DataSource: root:aiwass@tcp(127.0.0.1:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:aiwass@tcp(mysql:3306)/go_mall?charset=utf8mb4&parseTime=True&loc=Local
 
 PaymentRpc:
   Etcd:
     Hosts:
       - etcd:2379
     Key: payment.rpc
+    User: root
+    Pass: "123456"
 
 OrderRpc:
   Etcd:
     Hosts:
       - etcd:2379
     Key: order.rpc
+    User: root
+    Pass: "123456"
 
 ProductRpc:
   Etcd:
     Hosts:
       - etcd:2379
     Key: product.rpc
+    User: root
+    Pass: "123456"
 
 Mq:
   Etcd:
     Hosts:
       - etcd:2379
     Key: mq.rpc
+    User: root
+    Pass: "123456"
 
 Prometheus:
   Host: 0.0.0.0
@@ -38,7 +48,7 @@ Prometheus:
   Path: /metrics
 
 Dtm:
-  Server: "http://localhost:36789"
+  Server: "http://dtm:36789"
 
 ProductService: "grpc://127.0.0.1:9001"
 

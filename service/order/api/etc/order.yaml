@@ -13,6 +13,8 @@ OrderRpc:
     Hosts:
       - etcd:2379
     Key: order.rpc
+    User: root
+    Pass: "123456"
 
 
 AuthRpc:
@@ -20,6 +22,8 @@ AuthRpc:
     Hosts:
       - etcd:2379
     Key: auth.rpc
+    User: root
+    Pass: "123456"
 
 Prometheus:
   Host: 0.0.0.0

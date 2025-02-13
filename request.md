@@ -183,3 +183,10 @@ grafana https://juejin.cn/post/7044509187027501063#heading-12
 以 path 维度统计 api 接口的 qps查询 `sum(rate(http_server_requests_duration_ms_count{app="user-api"}[5m])) by (path)`
 以 method 维度统计 rpc 接口的qps查询 `sum(rate(rpc_server_requests_duration_ms_count{app="$rpc_app"}[5m])) by (method) `
 以 code 维度统计 rpc 接口的状态码 `sum(rate(rpc_server_requests_code_total{app="$rpc_app"}[5m])) by (code)`
+生成etcd https所需证书：`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes`
+优化auth模块，简历书写： 安全配置中心： "升级身份认证中心的配置管理方案，采用 Etcd 配置中心 集中管理 JWT 签名秘钥 AccessSecret 和 RefreshSecret。 利用 Etcd 的安全存储和访问控制机制，实现了更高强度的秘钥安全保护。"
+1. 将密钥存储到etcd中，服务启动时从etcd安全获取。
+2. 配备ACL，确保只有授权的服务才能访问存储 Secret 的 Key。
+3. 缩短RefreshToken的过期时间，安全性较高的场景设置1～3天，大多数场景设置7~30天（将不同服务的RefreshToken过期时间存储到Redis中）。用户登出时，立即失效RefreshToken
+4. 所有身份认证中心提供的 API 接口均 强制启用 HTTPS 协议，保障 Token 在网络传输过程中的安全性和完整性。"
+5. 引入 Redis 缓存，缓存已校验的 JWT Token 信息，显著提升 Token 验证性能，降低延迟。”

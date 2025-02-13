@@ -33,7 +33,8 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 		return nil, err
 	}
 	deliverResp, err := l.svcCtx.AuthRpc.DeliverTokenByRPC(l.ctx, &auth.DeliverTokenReq{
-		UserId: res.UserId,
+		UserId:      res.UserId,
+		ServiceName: l.svcCtx.Config.Name,
 	})
 	if err != nil {
 		return nil, err

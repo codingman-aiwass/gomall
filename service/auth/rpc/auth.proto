@@ -15,6 +15,7 @@ service AuthService {
 
 message DeliverTokenReq {
   uint32  user_id= 1;
+  string service_name=2;
 }
 
 message DeliveryResp {
