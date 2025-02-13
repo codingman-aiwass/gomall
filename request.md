@@ -190,3 +190,6 @@ grafana https://juejin.cn/post/7044509187027501063#heading-12
 3. 缩短RefreshToken的过期时间，安全性较高的场景设置1～3天，大多数场景设置7~30天（将不同服务的RefreshToken过期时间存储到Redis中）。用户登出时，立即失效RefreshToken
 4. 所有身份认证中心提供的 API 接口均 强制启用 HTTPS 协议，保障 Token 在网络传输过程中的安全性和完整性。"
 5. 引入 Redis 缓存，缓存已校验的 JWT Token 信息，显著提升 Token 验证性能，降低延迟。”
+   1. wrk 压力测试： `wrk -t4 -c100 -d30s --latency -H "Authorization: Bearer YOUR_ACCESS_TOKEN" https://127.0.0.1:8000/api/user/verify-access-token/`
+   2. `wrk -t4 -c100 -d30s -s post_token.lua https://127.0.0.1:8000/api/user/verify-access-token/`
+

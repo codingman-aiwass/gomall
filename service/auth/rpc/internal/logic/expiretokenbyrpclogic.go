@@ -2,9 +2,8 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"gomall/common/jwtx"
-	"time"
-
 	"gomall/service/auth/rpc/internal/svc"
 	"gomall/service/auth/rpc/types/auth"
 
@@ -31,14 +30,14 @@ func (l *ExpireTokenByRPCLogic) ExpireTokenByRPC(in *auth.ExpireTokenReq) (*auth
 		return nil, err
 	}
 	if exp > 0 {
-		l.svcCtx.RDB.SetEx(l.ctx, in.AccessToken, "blacklist", time.Duration(exp)*time.Second)
+		l.svcCtx.RDB.Del(l.ctx, fmt.Sprintf("accessToken:%d:%s", in.UserId, in.AccessToken))
 	}
 	_, exp, err = jwtx.ValidateToken(l.svcCtx.Config.AuthConfig.RefreshSecret, in.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
 	if exp > 0 {
-		l.svcCtx.RDB.SetEx(l.ctx, in.RefreshToken, "blacklist", time.Duration(exp)*time.Second)
+		l.svcCtx.RDB.Del(l.ctx, fmt.Sprintf("refreshToken:%d:%s", in.UserId, in.RefreshToken))
 	}
 	return &auth.ExpireTokenResp{Res: true}, nil
 }

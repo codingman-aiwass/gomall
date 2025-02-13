@@ -27,6 +27,7 @@ type (
 	// 验证AccessToken
 	VerifyAccessTokenRequest {
 		AccessToken string `json:"accessToken"`
+		UserId      uint32 `json:"userId"`
 	}
 	VerifyAccessTokenResponse {
 		res bool `json:"res"`
@@ -45,6 +46,7 @@ type (
 	LogoutRequest {
 		AccessToken  string `json:"accessToken"`
 		RefreshToken string `json:"refreshToken"`
+		UserId       uint32 `json:"userId"`
 	}
 	LogoutResponse {
 		res bool `json:"res"`

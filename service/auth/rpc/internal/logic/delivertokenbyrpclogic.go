@@ -40,5 +40,8 @@ func (l *DeliverTokenByRPCLogic) DeliverTokenByRPC(in *auth.DeliverTokenReq) (*a
 	if err != nil {
 		return nil, err
 	}
+	// 把Token存入Redis
+	l.svcCtx.RDB.Set(l.ctx, fmt.Sprintf("accessToken:%d:%s", in.UserId, accessToken), 0, time.Duration(l.svcCtx.Config.AuthConfig.AccessExpire)*time.Second)
+	l.svcCtx.RDB.Set(l.ctx, fmt.Sprintf("refreshToken:%d:%s", in.UserId, refreshToken), 0, time.Duration(l.svcCtx.Config.AuthConfig.RefreshExpire)*time.Second)
 	return &auth.DeliveryResp{Token: accessToken, RefreshToken: refreshToken}, nil
 }
