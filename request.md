@@ -147,6 +147,7 @@ sh mqadmin updateTopic -n localhost:9876 -t order_timeout -c DefaultCluster
 sh mqadmin updateTopic -n localhost:9876 -t transaction_timeout -c DefaultCluster
 sh mqadmin updateTopic -n localhost:9876 -t mark_order_paid -c DefaultCluster
 sh mqadmin updateTopic -n localhost:9876 -t mark_order_canceled -c DefaultCluster
+sh mqadmin updateTopic -n localhost:9876 -t casbin_policy_updated -c DefaultCluster
 
 docker run --name mysql1 -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=aiwass mysql:8.4
 docker run --name redis1 -d -p 6379:6379 redis:7.4.2
@@ -185,11 +186,16 @@ grafana https://juejin.cn/post/7044509187027501063#heading-12
 以 code 维度统计 rpc 接口的状态码 `sum(rate(rpc_server_requests_code_total{app="$rpc_app"}[5m])) by (code)`
 生成etcd https所需证书：`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes`
 优化auth模块，简历书写： 安全配置中心： "升级身份认证中心的配置管理方案，采用 Etcd 配置中心 集中管理 JWT 签名秘钥 AccessSecret 和 RefreshSecret。 利用 Etcd 的安全存储和访问控制机制，实现了更高强度的秘钥安全保护。"
-1. 将密钥存储到etcd中，服务启动时从etcd安全获取。
-2. 配备ACL，确保只有授权的服务才能访问存储 Secret 的 Key。
-3. 缩短RefreshToken的过期时间，安全性较高的场景设置1～3天，大多数场景设置7~30天（将不同服务的RefreshToken过期时间存储到Redis中）。用户登出时，立即失效RefreshToken
-4. 所有身份认证中心提供的 API 接口均 强制启用 HTTPS 协议，保障 Token 在网络传输过程中的安全性和完整性。"
-5. 引入 Redis 缓存，缓存已校验的 JWT Token 信息，显著提升 Token 验证性能，降低延迟。”
+核心职责: 提供用户身份认证、授权、Token 管理等核心安全服务，保障电商平台微服务架构的安全稳定运行。
+技术栈: Go-Zero, JWT (HS256), Redis (可选), Etcd (可选), Prometheus, Grafana, HTTPS, 环境变量/Etcd 配置中心 (根据实际采用的方案选择)
+1. “使用 Go 语言和 JWT 库实现身份令牌的生成和分发，包含用户 ID, 过期时间等必要信息，采用 HS256 算法 (或 RS256 算法) 进行签名。” (根据实际情况选择)
+2. 将密钥存储到etcd中，服务启动时从etcd安全获取。 并配备ACL，确保只有授权的服务才能访问存储 Secret 的 Key。
+3. 引入 Refresh Token 机制，实现 Access Token 的无缝续期，提升用户体验和安全性
+4. 缩短RefreshToken的过期时间，安全性较高的场景设置1～3天，大多数场景设置7~30天（将不同服务的RefreshToken过期时间存储到Redis中）。用户登出时，立即失效RefreshToken
+5. 所有身份认证中心提供的 API 接口均 强制启用 HTTPS 协议，保障 Token 在网络传输过程中的安全性和完整性。"
+6. 引入 Redis 缓存，缓存已校验的 JWT Token 信息，显著提升 Token 验证性能，降低延迟。并实现了实时Token撤销，为能够做到 用户主动退出登录以及管理员强制用户下线等功能提供了基础。”，
    1. wrk 压力测试： `wrk -t4 -c100 -d30s --latency -H "Authorization: Bearer YOUR_ACCESS_TOKEN" https://127.0.0.1:8000/api/user/verify-access-token/`
-   2. `wrk -t4 -c100 -d30s -s post_token.lua https://127.0.0.1:8000/api/user/verify-access-token/`
+   2. `wrk -t6 -c100 -d30s -s post_token.lua https://127.0.0.1:8000/api/user/verify-access-token/` Requests/sec:   8808.98 - 8719.49 1.06%
 
+7. 通过消息队列，实现实时更新权限信息，并确保权限校验实时生效。
+8. 实现API请求的身份令牌校验，可配置认证白名单，支持无登陆状态访问

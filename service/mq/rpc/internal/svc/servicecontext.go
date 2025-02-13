@@ -1,8 +1,10 @@
 package svc
 
 import (
+	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
+	"gomall/common/convert"
 	"gomall/service/mq/rpc/internal/config"
-
 	"time"
 
 	"github.com/apache/rocketmq-client-go/v2"
@@ -15,8 +17,18 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	var servers []string
+	for _, server := range c.RocketMQ.NameServers {
+		ipAddr, err := convert.ResolveNameServer(server)
+		if err == nil {
+			servers = append(servers, ipAddr)
+		} else {
+			logx.Error(fmt.Sprintf("resolve name server %s error", server))
+		}
+	}
+	logx.Infof("nameServers: %v", servers)
 	p, err := rocketmq.NewProducer(
-		producer.WithNameServer(c.RocketMQ.NameServers),
+		producer.WithNameServer(servers),
 		producer.WithGroupName("mq_producer_group"),
 		producer.WithRetry(2),
 		producer.WithQueueSelector(producer.NewHashQueueSelector()),

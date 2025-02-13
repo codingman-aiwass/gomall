@@ -7,6 +7,11 @@ Etcd:
   User: root
   Pass: "123456"
 
+
+RocketMQ:
+  NameServers:
+    - namesrv:9876
+
 RedisConfig:
   Host: redis:6379
   Password:

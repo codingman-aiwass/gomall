@@ -21,6 +21,7 @@ type ServiceContext struct {
 	RDB            *redis.Client
 	MySQLDB        *gorm.DB
 	CasbinEnforcer *casbin.Enforcer
+	CasbinWatcher  *casbin_init.RocketMQWatcher
 	WhiteList      []string
 }
 
@@ -86,12 +87,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			whiteList = append(whiteList, single_model.Path)
 		}
 	}
-
+	enforcer, watcher := casbin_init.InitCasbinWithWatcher(mysqlDB, c.RocketMQ.NameServers)
 	return &ServiceContext{
 		Config:         c,
 		RDB:            rdb,
 		MySQLDB:        mysqlDB,
 		WhiteList:      whiteList,
-		CasbinEnforcer: casbin_init.InitCasbin(mysqlDB),
+		CasbinEnforcer: enforcer,
+		CasbinWatcher:  watcher,
 	}
 }

@@ -23,4 +23,7 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
+	RocketMQ struct {
+		NameServers []string
+	}
 }
