@@ -16,7 +16,6 @@ type LoginResponse struct {
 type LogoutRequest struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
-	UserId       uint32 `json:"userId"`
 }
 
 type LogoutResponse struct {
@@ -48,7 +47,6 @@ type UserInfoResponse struct {
 
 type VerifyAccessTokenRequest struct {
 	AccessToken string `json:"accessToken"`
-	UserId      uint32 `json:"userId"`
 }
 
 type VerifyAccessTokenResponse struct {

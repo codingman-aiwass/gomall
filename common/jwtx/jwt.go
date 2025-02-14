@@ -63,12 +63,12 @@ func ValidateToken(secretKey string, tokenString string) (uint32, int64, error) 
 }
 
 // RenewToken 验证令牌并续期
-func RenewToken(refreshSecretKey, accessSecretKey string, seconds int64, accessToken string, refreshToken string) (newAccessToken string, err error) {
+func RenewToken(refreshSecretKey, accessSecretKey string, seconds int64, accessToken string, refreshToken string) (newAccessToken string, uid uint32, err error) {
 	// 如果refresh-token无效，直接返回错误
-	_, _, err = ValidateToken(refreshSecretKey, refreshToken)
+	uid, _, err = ValidateToken(refreshSecretKey, refreshToken)
 	if err != nil {
 		log.Println("verify refresh token err", err)
-		return "", err
+		return "", 0, err
 	}
 
 	// 解析和验证现有令牌
@@ -86,10 +86,14 @@ func RenewToken(refreshSecretKey, accessSecretKey string, seconds int64, accessT
 			// 提取 uid
 			uid, ok := token.Header["uid"].(int64)
 			if !ok {
-				return "", errors.New("invalid uid in token")
+				return "", uint32(uid), errors.New("invalid uid in token")
 			}
 			// 生成新令牌
-			return GetToken(accessSecretKey, jwt.TimeFunc().Unix(), seconds, uid)
+			newToken, err := GetToken(accessSecretKey, jwt.TimeFunc().Unix(), seconds, uid)
+			if err != nil {
+				return "", uint32(uid), err
+			}
+			return newToken, uint32(uid), nil
 		}
 	}
 	return

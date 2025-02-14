@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gomall/service/product/model"
 	"gomall/service/product/rpc/internal/svc"
 	"gomall/service/product/rpc/types/product"
@@ -84,6 +85,11 @@ func (l *UpdateProductLogic) UpdateProduct(in *product.UpdateProductReq) (*produ
 	if err != nil {
 		return &product.UpdateProductResp{Success: false}, status.Error(500, err.Error())
 	}
-
+	// 更新成功以后，删除Redis中的缓存数据
+	hashKey := fmt.Sprintf("product:%d", in.Id)
+	if err := l.svcCtx.RDB.Del(context.Background(), hashKey).Err(); err != nil {
+		// 这里建议记录日志，但不阻塞整个业务操作
+		logx.Infof("failed to delete cache for product %d: %v", in.Id, err)
+	}
 	return &product.UpdateProductResp{Success: true}, nil
 }

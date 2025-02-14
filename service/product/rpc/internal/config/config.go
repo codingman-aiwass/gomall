@@ -8,4 +8,10 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
+	RedisConfig struct {
+		Host     string
+		Password string
+		DB       int
+		PoolSize int
+	}
 }

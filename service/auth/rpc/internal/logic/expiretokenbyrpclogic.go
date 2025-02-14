@@ -30,14 +30,14 @@ func (l *ExpireTokenByRPCLogic) ExpireTokenByRPC(in *auth.ExpireTokenReq) (*auth
 		return nil, err
 	}
 	if exp > 0 {
-		l.svcCtx.RDB.Del(l.ctx, fmt.Sprintf("accessToken:%d:%s", in.UserId, in.AccessToken))
+		l.svcCtx.RDB.Del(l.ctx, fmt.Sprintf("accessToken:%s", in.AccessToken))
 	}
 	_, exp, err = jwtx.ValidateToken(l.svcCtx.Config.AuthConfig.RefreshSecret, in.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
 	if exp > 0 {
-		l.svcCtx.RDB.Del(l.ctx, fmt.Sprintf("refreshToken:%d:%s", in.UserId, in.RefreshToken))
+		l.svcCtx.RDB.Del(l.ctx, fmt.Sprintf("refreshToken:%s", in.RefreshToken))
 	}
 	return &auth.ExpireTokenResp{Res: true}, nil
 }

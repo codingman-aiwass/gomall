@@ -65,6 +65,7 @@ type (
 		Page         int32  `json:"page"`
 		PageSize     int64  `json:"page_size"`
 		CategoryName string `json:"category_name"`
+		LastId       int32  `json:"last_id,optional"`
 	}
 	ListProductResponse {
 		ProductList []*Product `json:"product_list"`

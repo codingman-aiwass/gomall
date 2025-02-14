@@ -29,6 +29,7 @@ func (l *ListProductLogic) ListProduct(req *types.ListProductRequest) (resp *typ
 		Page:         req.Page,
 		PageSize:     req.PageSize,
 		CategoryName: req.CategoryName,
+		LastId:       uint32(req.LastId),
 	})
 	if err != nil {
 		return nil, err

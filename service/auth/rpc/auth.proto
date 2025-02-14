@@ -26,13 +26,14 @@ message DeliveryResp {
 message VerifyTokenReq {
   string token = 1;
   string token_type = 2;
-  uint32 user_id=3;
+//  uint32 user_id=3;
 }
 
 message VerifyResp {
   bool res = 1;
-  uint32 user_id = 2;
-  int64 exp = 3;
+  int64 exp = 2;
+  uint32 user_id = 3;
+
 }
 
 message RefreshTokenReq{
@@ -47,7 +48,7 @@ message RefreshTokenResp{
 message ExpireTokenReq{
   string access_token=1;
   string refresh_token=2;
-  uint32 user_id=3;
+//  uint32 user_id=3;
 }
 
 message ExpireTokenResp{

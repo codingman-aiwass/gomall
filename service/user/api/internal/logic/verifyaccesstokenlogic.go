@@ -28,7 +28,6 @@ func (l *VerifyAccessTokenLogic) VerifyAccessToken(req *types.VerifyAccessTokenR
 	verifyResp, err := l.svcCtx.AuthRpc.VerifyTokenByRPC(l.ctx, &auth.VerifyTokenReq{
 		Token:     req.AccessToken,
 		TokenType: "access",
-		UserId:    req.UserId,
 	})
 	if err != nil {
 		return nil, err

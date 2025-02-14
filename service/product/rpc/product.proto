@@ -64,6 +64,7 @@ message ListProductsReq{
   int64 pageSize = 2;
 
   string categoryName = 3;
+  uint32 lastId = 4;
 }
 
 message Product {
